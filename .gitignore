@@ -19,3 +19,6 @@ __pycache__/
 
 # C extensions
 *.so
+
+# Vim temp files
+*.swp
