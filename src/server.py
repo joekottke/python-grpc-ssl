@@ -23,7 +23,7 @@ class Namer(namer_pb2_grpc.NamerServicer):
     return response
 
 
-def serve(port=454545):
+def serve(port=31000):
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
   namer_pb2_grpc.add_NamerServicer_to_server(Namer(), server)
   print('Starting server. Listening on port {}...'.format(port))
@@ -37,6 +37,6 @@ def serve(port=454545):
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='GRPC-based namer server.')
-  parser.add_argument('--port', type=int, required=True, help='The server port')
+  parser.add_argument('--port', type=int, help='The server port', default=31000)
   args = parser.parse_args()
   serve(args.port)
