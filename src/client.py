@@ -19,8 +19,9 @@ first_names = ['Jim', 'Henry', 'Michael', 'Robert', 'Ronald',
 last_names = ['Smith', 'Jones', 'Cooper', 'Hunter', 'Baker',
               'Watson', 'Redmond', 'Williams', 'Crick', 'Moore']
 
-channel = grpc.insecure_channel(args.host + ':' + str(args.port))
-
+# channel = grpc.insecure_channel(args.host + ':' + str(args.port))
+creds = grpc.ssl_channel_credentials(open('../ssl/ca.pem').read())
+channel = grpc.secure_channel(args.host + ':' + str(args.port), creds)
 stub = namer_pb2_grpc.NamerStub(channel)
 
 for i in xrange(1000):

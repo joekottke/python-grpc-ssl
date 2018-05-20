@@ -27,10 +27,14 @@ class Namer(namer_pb2_grpc.NamerServicer):
 
 
 def serve(port=31000):
+  private_key = open('../ssl/server-key.pem').read()
+  certificate_chain = open('../ssl/server.pem').read()
+  credentials = grpc.ssl_server_credentials(
+    [(private_key, certificate_chain)])
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
   namer_pb2_grpc.add_NamerServicer_to_server(Namer(), server)
   print('Starting server. Listening on port {}...'.format(port))
-  server.add_insecure_port('[::]:' + str(port))
+  server.add_secure_port('[::]:' + str(port), credentials)
   server.start()
   try:
     while True:
