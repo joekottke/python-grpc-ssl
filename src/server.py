@@ -20,6 +20,9 @@ class Namer(namer_pb2_grpc.NamerServicer):
     response.full_name = namer.english_full_name(first=first, last=last, 
                                                  middle=middle, prefix=prefix, 
                                                  suffix=suffix)
+    print('Peer: {}\nPeerIdentity: {}\nMetadata: {}'.format(
+      context.peer(), context.peer_identity_key(), 
+      context.invocation_metadata()))
     return response
 
 
@@ -37,6 +40,7 @@ def serve(port=31000):
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='GRPC-based namer server.')
-  parser.add_argument('--port', type=int, help='The server port', default=31000)
+  parser.add_argument('--port', type=int, default=31000,
+    help='The server port')
   args = parser.parse_args()
   serve(args.port)
