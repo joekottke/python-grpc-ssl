@@ -58,7 +58,13 @@ def build_client_stub(cli_args):
             root_certs = open(cli_args.ca_cert).read()
         else:
             root_certs = None
-        credentials = grpc.ssl_channel_credentials(root_certs)
+
+        if cli_args.client_cert and cli_args.client_key:
+            cert = open(cli_args.client_cert).read()
+            key = open(cli_args.client_key).read()
+            credentials = grpc.ssl_channel_credentials(root_certs, key, cert)
+        else:
+            credentials = grpc.ssl_channel_credentials(root_certs)
         channel = grpc.secure_channel(
             cli_args.host + ':' + str(cli_args.port), credentials)
     else:
