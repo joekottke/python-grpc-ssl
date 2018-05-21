@@ -31,8 +31,11 @@ class Namer(namer_pb2_grpc.NamerServicer):
 def serve(port=31000):
     private_key = open('../ssl/server-key.pem').read()
     certificate_chain = open('../ssl/server.pem').read()
+    ca_cert = open('../ssl/ca.pem').read()
     credentials = grpc.ssl_server_credentials(
-        [(private_key, certificate_chain)]
+        [(private_key, certificate_chain)],
+        root_certificates=ca_cert,
+        require_client_auth=True
     )
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     namer_pb2_grpc.add_NamerServicer_to_server(Namer(), server)
