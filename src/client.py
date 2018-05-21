@@ -1,5 +1,7 @@
 import argparse
 import random
+import sys
+
 import grpc
 
 import namer_pb2
@@ -12,6 +14,7 @@ first_names = ['Jim', 'Henry', 'Michael', 'Robert', 'Ronald',
 last_names = ['Smith', 'Jones', 'Cooper', 'Hunter', 'Baker',
               'Watson', 'Redmond', 'Williams', 'Crick', 'Moore']
 
+
 def command_arguments():
     parser = argparse.ArgumentParser(description='GRPC-based namer client.')
     parser.add_argument(
@@ -22,17 +25,29 @@ def command_arguments():
     )
     parser.add_argument(
         '--host', type=str, default='127.0.0.1',
-        help='The server hostname or address'
+        help='The server hostname or address.'
     )
     parser.add_argument(
         '--use_tls',
         action='store_true',
-        help='Enable TLS Connectivity'
+        help='Enable TLS Connectivity.'
     )
     parser.add_argument(
         '--ca_cert',
         type=str,
         help='CA cert or bundle.'
+    )
+    parser.add_argument(
+        '--client_cert',
+        type=str,
+        required='--client_key' in sys.argv,
+        help='Client certificate used for client identification and auth.'
+    )
+    parser.add_argument(
+        '--client_key',
+        type=str,
+        required='--client_cert' in sys.argv,
+        help='Client certificate key.'
     )
     return parser.parse_args()
 
@@ -79,6 +94,7 @@ def main():
 
         name_response = stub.EnglishFullName(name_request)
         print("Got response: '{}'".format(name_response.full_name))
+
 
 if __name__ == '__main__':
     main()
