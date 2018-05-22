@@ -22,3 +22,9 @@ __pycache__/
 
 # Vim temp files
 *.swp
+
+# Cert and CSR files
+*.pem
+*.csr
+*.key
+*.crt
