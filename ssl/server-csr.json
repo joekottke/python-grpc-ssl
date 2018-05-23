@@ -1,5 +1,5 @@
 {
-  "CN": "server.0--0.net",
+  "CN": "server.example.com",
   "key": {
     "algo": "rsa",
     "size": 2048
