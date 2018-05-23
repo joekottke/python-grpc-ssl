@@ -37,23 +37,21 @@ def command_args():
         help='The server listen port'
     )
     parser.add_argument(
-        '--use_tls_auth',
-        action='store_true',
-        help='Enable TLS Connectivity.'
-    )
-    parser.add_argument(
         '--ca_cert',
         type=str,
+        required=True,
         help='CA cert or bundle.'
     )
     parser.add_argument(
         '--server_cert',
         type=str,
+        required=True,
         help='Server certificate.'
     )
     parser.add_argument(
         '--server_key',
         type=str,
+        required=True,
         help='Server certificate key.'
     )
     return parser.parse_args()
@@ -62,24 +60,15 @@ def command_args():
 def serve(args):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     namer_pb2_grpc.add_NamerServicer_to_server(Namer(), server)
-
-    if args.server_key and args.server_cert:
-        private_key = open(args.server_key).read()
-        certificate_chain = open(args.server_cert).read()
-        if args.use_tls_auth:
-            ca_cert = open(args.ca_cert).read()
-            credentials = grpc.ssl_server_credentials(
-                [(private_key, certificate_chain)],
-                root_certificates=ca_cert,
-                require_client_auth=True
-            )
-        else:
-            credentials = grpc.ssl_server_credentials(
-                [(private_key, certificate_chain)]
-            )
-        server.add_secure_port('[::]:' + str(args.port), credentials)
-    else:
-        server.add_insecure_port('[::]:' + str(args.port))
+    private_key = open(args.server_key).read()
+    certificate_chain = open(args.server_cert).read()
+    ca_cert = open(args.ca_cert).read()
+    credentials = grpc.ssl_server_credentials(
+        [(private_key, certificate_chain)],
+        root_certificates=ca_cert,
+        require_client_auth=True
+    )
+    server.add_secure_port('[::]:' + str(args.port), credentials)
     print('Starting server. Listening on port {}...'.format(args.port))
     server.start()
     try:

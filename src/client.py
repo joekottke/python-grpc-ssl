@@ -28,48 +28,33 @@ def command_arguments():
         help='The server hostname or address.'
     )
     parser.add_argument(
-        '--use_tls',
-        action='store_true',
-        help='Enable TLS Connectivity.'
-    )
-    parser.add_argument(
         '--ca_cert',
         type=str,
+        required=True,
         help='CA cert or bundle.'
     )
     parser.add_argument(
         '--client_cert',
         type=str,
-        required='--client_key' in sys.argv,
+        required=True,
         help='Client certificate used for client identification and auth.'
     )
     parser.add_argument(
         '--client_key',
         type=str,
-        required='--client_cert' in sys.argv,
+        required=True,
         help='Client certificate key.'
     )
     return parser.parse_args()
 
 
 def build_client_stub(cli_args):
-    if cli_args.use_tls:
-        if cli_args.ca_cert:
-            root_certs = open(cli_args.ca_cert).read()
-        else:
-            root_certs = None
-
-        if cli_args.client_cert and cli_args.client_key:
-            cert = open(cli_args.client_cert).read()
-            key = open(cli_args.client_key).read()
-            credentials = grpc.ssl_channel_credentials(root_certs, key, cert)
-        else:
-            credentials = grpc.ssl_channel_credentials(root_certs)
-        channel = grpc.secure_channel(
-            cli_args.host + ':' + str(cli_args.port), credentials)
-    else:
-        channel = grpc.insecure_channel(
-            cli_args.host + ':' + str(cli_args.port))
+    ca_cert = open(cli_args.ca_cert).read()
+    cert = open(cli_args.client_cert).read()
+    key = open(cli_args.client_key).read()
+    credentials = grpc.ssl_channel_credentials(ca_cert, key, cert)
+    channel = grpc.secure_channel(
+        cli_args.host + ':' + str(cli_args.port), credentials)
     return namer_pb2_grpc.NamerStub(channel)
 
 
