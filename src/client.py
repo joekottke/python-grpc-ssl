@@ -66,23 +66,18 @@ def main():
         prefix = None
         suffix = None
         middle = None
-        first = first_names[random.randint(0, 9)]
-        last = last_names[random.randint(0, 9)]
-
+        first = random.choice(first_names)
+        last = random.choice(last_names)
         if random.randint(0, 1):
-            middle = first_names[random.randint(0, 9)]
-
+            middle = random.choice(first_names)
         if random.randint(0, 1):
-            prefix = prefixes[random.randint(0, 2)]
-
+            prefix = random.choice(prefixes)
         if random.randint(0, 1):
-            suffix = suffixes[random.randint(0, 4)]
-
+            suffix = random.choice(suffixes)
         name_request = namer_pb2.NameRequest(
             first_name=first, last_name=last,
             middle_name=middle, prefix=prefix, suffix=suffix
         )
-
         name_response = stub.EnglishFullName(name_request)
         print("Got response: '{}'".format(name_response.full_name))
 
