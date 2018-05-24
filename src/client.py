@@ -1,6 +1,5 @@
 import argparse
 import random
-import sys
 
 import grpc
 
