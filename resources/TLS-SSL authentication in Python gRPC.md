@@ -8,19 +8,19 @@ We also had a need to send data and events between geographically disparate regi
 
 gRPC has pretty mushc solved all of these issues by creating a strong API contract between clients and servers through the use of Protocol Buffers, implementing the network programming semantics across multiuple languages, and using TLS to secure the whole thing.
 
-I'd found some decent examples of doing mutual TLS authentication in other languages (like this [Go example](https://bbengfort.github.io/programmer/2017/03/03/secure-grpc.html)), so I had to extrapolate this into Python.
+There are some great exampls of doing Server authentication and identification in Python gRPC (like the one at [Sandtable](https://www.sandtable.com/using-ssl-with-grpc-in-python/), and I'd found some decent examples of doing mutual TLS authentication in other languages (like this [Go example](https://bbengfort.github.io/programmer/2017/03/03/secure-grpc.html)), so I decided to just extrapolate this into Python.
 
 ## TLS Basics
 ![Basic Certificate Hierarchy](certificate-hierarchy-basic.png)
 
-### Chain of Trust, Transitive Trust
-![Certificate Panel](certificate-panel.png)
+A quick refresher: TLS/SSL works through chains of trust, or transitive trust. If I (or my machine, or process) trust a particular certificate authority, I therefor trust the certificates that it has generated.
 
-### Root certificate stores
+In terms of server certificates, I also have to see that the servername that I connect to is also the server name mentioned in the certificate.
 
 ## Generate Certificates
+For the purpose of this example, we will be creating an extremely basic PKI Infrastructure using CloudFlare's [CFSSL](https://cfssl.org).  Specifically, we will be using the `cfssl` and `cfssljson` tools, which can be downloaded [here](https://pkg.cfssl.org).
 
-### CFSSL
+The config files in the `ssl` directory intended to be modified, but they can also be used as-is for demonstration purposes.
 
 ### Generate CA Certificate and Config
 ```sh
@@ -28,16 +28,20 @@ cd ./ssl
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
-### Generate Server and Client certificates
+This generates the `ca.pem` and `ca-key.pem` files. The `ca.pem` file will be used by both the client and ther server to verify each other.
 
-Note that the server name in the server certificate needs to be the same as the server name that you connect to. This can be accomplished by setting a name in your `/etc/hosts` file, or by having the name in DNS.
+### Generate Server and Client certificates
 
 #### Server Certificate
 
 ```sh
 cd ./ssl
-cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -hostname='node04.example.com,node.example.com' server-csr.json | cfssljson -bare server
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -hostname='127.0.0.1,localhost' server-csr.json | cfssljson -bare server
 ```
+
+This creates the certificate and key pair to be used by the server.  
+
+**Note:** You can change the `hostname` parameter to the name or IP address of a server on your network,  it just needs to match the server name that you connect to with the client.
 
 #### Client Certificate
 
@@ -45,6 +49,8 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -hostname='no
 cd ./ssl
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json client-csr.json | cfssljson -bare client
 ```
+
+When generating the client certificate and key pair, you will see the warning `WARNING: some blah blah blah`. This is expected and acceptable as the client certificate won't be used for server identification, only client identification (see note above).
 
 ## TLS Server Identification and Authentication
 
