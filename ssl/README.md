@@ -14,11 +14,15 @@ While it is not required for basic testing, it is otherwise assumed that files i
  cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
+This will generate the files `ca.pem` and `ca-key.pem`. These files will be used to generate the client and server certificates, and the `ca.pem` file will be used to verify the client and server to each other, respectively.
+
 ## Generate client certificate
 
 ```sh
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json client-csr.json | cfssljson -bare client
 ```
+
+This will generate the files `client.pem` and `client-key.pem`.
 
 **_Note:_** You will get a warning from this command:
 
@@ -36,3 +40,5 @@ As this certificate is to be used for a client, and not a server, it is acceptab
 ```sh
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -hostname=<your server hostname> server-csr.json | cfssljson -bare server
 ```
+
+This will generate the files `server.pem` and `server-key.pem`.
