@@ -19,6 +19,7 @@ While it is not required for basic testing, it is otherwise assumed that files i
 ```sh
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json client-csr.json | cfssljson -bare client
 ```
+
 **_Note:_** You will get a warning from this command:
 
 ```
