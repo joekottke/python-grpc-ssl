@@ -6,7 +6,7 @@ Files in this directory are meant to be used with the CFSSL toolkit, which can b
 
 ## Files
 
-While it is not required for basic testing, it is otherwise assumed that files in this directory will be modified with your own details, particularly the `ca-config.json` and `ca-csr.json` files. 
+While it is not required for basic testing, it is otherwise assumed that files in this directory will be modified with your own details, particularly the `ca-config.json` and `ca-csr.json` files.
 
 ## Generate Certificate Authority
 
@@ -28,7 +28,7 @@ of Publicly-Trusted Certificates, v.1.1.6, from the CA/Browser Forum (https://ca
 specifically, section 10.2.3 ("Information Requirements").
 ```
 
-As this certificate is to be used for a server, and not a client, it is acceptable that the hosts field is missing.
+As this certificate is to be used for a client, and not a server, it is acceptable that the hosts field is missing.
 
 ## Generate server certificate
 
