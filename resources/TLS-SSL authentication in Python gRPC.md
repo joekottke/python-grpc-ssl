@@ -113,4 +113,4 @@ When the client connects to the server, it presents its own certificate during t
 
 #### Mind the CA bundle
 
-Note that you can pass a CA bundle (multiple CA certifcates concatenated in a single file) to `grpc.ssl_server_credentials()`, and that means that your server will trust any client certificates signed by those CAs. If you put a Public CA certificate in that bundle (like one from GoDaddy, Symantec, GeoTrust, etc.) any certificate signed by one of those CAs will be acceptable to the server.
+Note that you can pass a CA bundle (multiple CA certificates concatenated in a single file) to `grpc.ssl_server_credentials()`, and that means that your server will trust any client certificates signed by those CAs. If you put a Public CA certificate in that bundle (like one from GoDaddy, Symantec, GeoTrust, etc.) any certificate signed by one of those CAs will be acceptable to the server.
