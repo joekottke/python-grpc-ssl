@@ -87,7 +87,7 @@ credentials = grpc.ssl_server_credentials(
 )
 server.add_secure_port('[::]:' + str(port), credentials)
 
-print('Starting server. Listening on port {}...'.format())
+print('Starting server. Listening on port {}...'.format(port))
 server.start()
 ```
 
