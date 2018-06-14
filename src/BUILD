@@ -24,7 +24,8 @@ python_binary(
     ':namer-library',
     ':namer-grpc',
     ':protobuf',
-    ':grpcio'
+    ':grpcio',
+    ':prometheus-client'
   ],
 )
 

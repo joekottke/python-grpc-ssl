@@ -4,13 +4,19 @@ from concurrent import futures
 
 import grpc
 
+from prometheus_client import start_http_server, Summary
 from proto import namer_pb2
 from proto import namer_pb2_grpc
 
 import namer
 
+request_metric = Summary(
+    'english_full_name_seconds',
+    'Time processing EnglishFullName requests')
+
 
 class Namer(namer_pb2_grpc.NamerServicer):
+    @request_metric.time()
     def EnglishFullName(self, request, context):
         response = namer_pb2.NameResponse()
         first = request.first_name
@@ -35,6 +41,12 @@ def command_args():
         type=int,
         default=31000,
         help='The server listen port'
+    )
+    parser.add_argument(
+        '--metrics_port',
+        type=int,
+        default=38000,
+        help='The server metrics http port'
     )
     parser.add_argument(
         '--ca_cert',
@@ -69,6 +81,9 @@ def serve(args):
         require_client_auth=True
     )
     server.add_secure_port('[::]:' + str(args.port), credentials)
+    print('Starting metrics server. Listening on port {}...'.format(
+        args.metrics_port))
+    start_http_server(args.metrics_port)
     print('Starting server. Listening on port {}...'.format(args.port))
     server.start()
     try:
