@@ -1,6 +1,6 @@
 python_library(
   name='namer-grpc',
-  sources=glob('proto/*.py')
+  sources=globs('proto/*.py')
 )
 
 python_library(
