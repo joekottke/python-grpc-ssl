@@ -3,8 +3,8 @@ import random
 
 import grpc
 
-import namer_pb2
-import namer_pb2_grpc
+from proto import namer_pb2
+from proto import namer_pb2_grpc
 
 prefixes = ['Dr.', 'Honorary', 'Judge']
 suffixes = ['III', 'II', 'The Great', 'BDFL', 'Esq']

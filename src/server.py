@@ -4,8 +4,8 @@ from concurrent import futures
 
 import grpc
 
-import namer_pb2
-import namer_pb2_grpc
+from proto import namer_pb2
+from proto import namer_pb2_grpc
 
 import namer
 
