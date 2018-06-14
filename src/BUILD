@@ -9,6 +9,15 @@ python_library(
 )
 
 python_binary(
+  name='namer-client',
+  source='client.py',
+  dependencies = [
+    ':namer-grpc',
+    ':protobuf',
+    ':grpcio'
+  ],
+)
+python_binary(
   name='namer-server',
   source='server.py',
   dependencies = [
