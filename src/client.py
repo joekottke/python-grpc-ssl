@@ -1,5 +1,6 @@
 import argparse
 import random
+import time
 
 import grpc
 
@@ -61,6 +62,7 @@ def main():
     args = command_arguments()
     stub = build_client_stub(args)
 
+    start_time = time.time()
     for i in xrange(1000):
         prefix = None
         suffix = None
@@ -79,6 +81,9 @@ def main():
         )
         name_response = stub.EnglishFullName(name_request)
         print("Got response: '{}'".format(name_response.full_name))
+    time_total = time.time() - start_time
+    print("Total time: {}\nTotal QPS: {}".format(
+        time_total, 1000 / time_total))
 
 
 if __name__ == '__main__':
