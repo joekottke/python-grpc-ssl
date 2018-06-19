@@ -1,4 +1,5 @@
 import argparse
+import concurrent.futures
 import random
 import time
 
@@ -63,26 +64,33 @@ def build_client_stub(cli_args):
 def main():
     args = command_arguments()
     stub = build_client_stub(args)
-
+    future_name_response = []
     start_time = time.time()
-    for i in xrange(1000):
-        prefix = None
-        suffix = None
-        middle = None
-        first = random.choice(first_names)
-        last = random.choice(last_names)
-        if random.randint(0, 1):
-            middle = random.choice(first_names)
-        if random.randint(0, 1):
-            prefix = random.choice(prefixes)
-        if random.randint(0, 1):
-            suffix = random.choice(suffixes)
-        name_request = namer_pb2.NameRequest(
-            first_name=first, last_name=last,
-            middle_name=middle, prefix=prefix, suffix=suffix
-        )
-        name_response = stub.EnglishFullName(name_request)
-        print("Got response: '{}'".format(name_response.full_name))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        for i in xrange(1000):
+            prefix = None
+            suffix = None
+            middle = None
+            first = random.choice(first_names)
+            last = random.choice(last_names)
+            if random.randint(0, 1):
+                middle = random.choice(first_names)
+            if random.randint(0, 1):
+                prefix = random.choice(prefixes)
+            if random.randint(0, 1):
+                suffix = random.choice(suffixes)
+            name_request = namer_pb2.NameRequest(
+                first_name=first, last_name=last,
+                middle_name=middle, prefix=prefix, suffix=suffix
+            )
+            future_name_response.append(
+                executor.submit(stub.EnglishFullName, name_request)
+            )
+
+        for f in concurrent.futures.as_completed(future_name_response):
+            response = f.result()
+            print("Got response: '{}'".format(response.full_name))
+
     time_total = time.time() - start_time
     print("Total time: {}\nTotal QPS: {}".format(
         time_total, 1000 / time_total))
