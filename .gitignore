@@ -33,3 +33,7 @@ __pycache__/
 .pants*
 .cache
 dist
+
+# Editor-specific #
+###################
+.vscode
