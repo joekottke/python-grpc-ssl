@@ -12,7 +12,7 @@ There are some great examples of doing Server authentication and identification 
 
 ## TLS Basics
 
-![Basic Certificate Hierarchy](certificate-hierarchy-basic.png)
+![Basic Certificate Hierarchy](resources/certificate-hierarchy-basic.png)
 A quick refresher: TLS/SSL works through chains of trust, or transitive trust. If I (or my machine, or process) trust a particular certificate authority, I therefor trust the certificates that it has generated. This trust is implicit in browsers on operating systems: every browser and/or operating system has a 'Trusted Roots' certificate store that it uses to confirm the trust of HTTPS servers on the internet.  If you received an SSL/TLS server certificate from, say, [Let's Encrypt](https://letsencrypt.org), [GoDaddy](https://godaddy.com), or other public certificate authorities, browsers and operating systems will automatically trust the veracity of that server certificate.
 
 In our example here, we are creating our own certificate authority (CA), and have to the client about the CA certificate so that it can trust the server certificates presented by our server process.
