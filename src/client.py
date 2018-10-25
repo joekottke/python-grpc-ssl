@@ -18,14 +18,16 @@ last_names = ['Smith', 'Jones', 'Cooper', 'Hunter', 'Baker',
 def command_arguments():
     parser = argparse.ArgumentParser(description='GRPC-based namer client.')
     parser.add_argument(
-        '--port',
-        type=int,
-        default=31000,
-        help='The server port'
+        '--host',
+        type=str,
+        required=True,
+        help='The server hostname or address.'
     )
     parser.add_argument(
-        '--host', type=str, default='127.0.0.1',
-        help='The server hostname or address.'
+        '--port',
+        type=int,
+        required=True,
+        help='The server port'
     )
     parser.add_argument(
         '--ca_cert',

@@ -39,13 +39,13 @@ def command_args():
     parser.add_argument(
         '--port',
         type=int,
-        default=31000,
+        required=True,
         help='The server listen port'
     )
     parser.add_argument(
         '--metrics_port',
         type=int,
-        default=38000,
+        required=True,
         help='The server metrics http port'
     )
     parser.add_argument(
