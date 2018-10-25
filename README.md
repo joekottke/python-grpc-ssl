@@ -16,7 +16,7 @@ There are some great examples of doing Server authentication and identification 
 
 A quick refresher: TLS/SSL works through chains of trust, or transitive trust. If I (or my machine, or process) trust a particular certificate authority, I therefor trust the certificates that it has generated. This trust is implicit in browsers on operating systems: every browser and/or operating system has a 'Trusted Roots' certificate store that it uses to confirm the trust of HTTPS servers on the internet.  If you received an SSL/TLS server certificate from, say, [Let's Encrypt](https://letsencrypt.org), [GoDaddy](https://godaddy.com), or other public certificate authorities, browsers and operating systems will automatically trust the veracity of that server certificate.
 
-In our example here, we are creating our own certificate authority (CA), and have to the client about the CA certificate so that it can trust the server certificates presented by our server process.
+In our example here, we are creating our own certificate authority (CA), and have inform to the client about the CA certificate so that it can trust the server certificate presented by our server process.
 
 In terms of server certificates, we also have to see that the server name that we connect to is also the server name mentioned in the server certificate.
 
@@ -66,9 +66,9 @@ specifically, section 10.2.3 ("Information Requirements").
 
 This is expected and acceptable as the client certificate won't be used for server identification, only client identification (see note above).
 
-## TLS Server Identification and Authentication
+## TLS Server Identification and Encryption
 
-### Client trusts the certificate authority cert, thus the server.
+### Client trusts the certificate authority certificate, and thus the server certificate.
 
 This is similar to the browser use-case, where the browser has (pre-installed) all of the public Certificate Authority certificates installed in the browser or system trust store.
 
@@ -77,6 +77,7 @@ In our case, we are generating our own CA certificate, and distributing it to bo
 We can configure our server to use SSL with something similar to the following code snippet
 
 ```python
+# Server snippet
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 namer_pb2_grpc.add_NamerServicer_to_server(Namer(), server)
 port = 9999
@@ -96,6 +97,7 @@ server.start()
 And the client would look something like this:
 
 ```python
+# Client snippet
 server_port = 9999
 server_host = 'localhost'
 ca_cert = 'ca.pem'
@@ -105,7 +107,7 @@ channel = grpc.secure_channel(server_host + ':' + str(server_port), credentials)
 stub = namer_pb2_grpc.NamerStub(channel)
 ```
 
-[Sandtable](https://www.sandtable.com/using-ssl-with-grpc-in-python/) has a well written post about enabling TLS gRPC servers.
+[Sandtable](https://www.sandtable.com/using-ssl-with-grpc-in-python/) has a well written post about building this kind of TLS gRPC server and client.
 
 ## TLS Client Identification and Authentication
 
