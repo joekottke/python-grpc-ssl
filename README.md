@@ -72,7 +72,7 @@ This is expected and acceptable as the client certificate won't be used for serv
 
 This is similar to the browser use-case, where the browser has (pre-installed) all of the public Certificate Authority certificates installed in the browser or system trust store.
 
-In our case, we are generating our own CA certificate, and distributing it to both the client and the server.
+In our case, we are generating our own CA certificate, and distributing it to both the client and the server. But when we are only doing one-way trust verification (the client verifies the identity of the server, but the server doesn't care about the identity of the client), the server does not necessarily need to present the CA certificate as part of its certificate chain.  In general, a server only needs to present enough of a certificate chain so that the client can ascend up the certificate to a certificate that is signed by one of the CA certificates trusted by the client already.
 
 We can configure our server to use SSL with something similar to the following code snippet
 
