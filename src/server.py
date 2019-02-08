@@ -72,9 +72,9 @@ def command_args():
 def serve(args):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     namer_pb2_grpc.add_NamerServicer_to_server(Namer(), server)
-    private_key = open(args.server_key).read()
-    certificate_chain = open(args.server_cert).read()
-    ca_cert = open(args.ca_cert).read()
+    private_key = open(args.server_key,'rb').read()
+    certificate_chain = open(args.server_cert,'rb').read()
+    ca_cert = open(args.ca_cert,'rb').read()
     credentials = grpc.ssl_server_credentials(
         [(private_key, certificate_chain)],
         root_certificates=ca_cert,

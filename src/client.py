@@ -51,9 +51,9 @@ def command_arguments():
 
 
 def build_client_stub(cli_args):
-    ca_cert = open(cli_args.ca_cert).read()
-    cert = open(cli_args.client_cert).read()
-    key = open(cli_args.client_key).read()
+    ca_cert = open(cli_args.ca_cert,'rb').read()
+    cert = open(cli_args.client_cert,'rb').read()
+    key = open(cli_args.client_key,'rb').read()
     credentials = grpc.ssl_channel_credentials(ca_cert, key, cert)
     channel = grpc.secure_channel(
         cli_args.host + ':' + str(cli_args.port), credentials)
