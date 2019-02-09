@@ -65,7 +65,7 @@ def main():
     stub = build_client_stub(args)
 
     start_time = time.time()
-    for i in xrange(1000):
+    for _ in range(1000):
         prefix = None
         suffix = None
         middle = None
