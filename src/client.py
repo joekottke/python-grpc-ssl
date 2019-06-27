@@ -91,7 +91,7 @@ def main():
             middle_name=middle, prefix=prefix, suffix=suffix
         )
         name_response = stub.EnglishFullName(name_request)
-        print("Got response: '{}'".format(name_response.full_name))
+        #print("Got response: '{}'".format(name_response.full_name))
     time_total = time.time() - start_time
     print("Total time: {}\nTotal QPS: {}".format(
         time_total, 1000 / time_total))
