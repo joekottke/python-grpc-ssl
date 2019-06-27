@@ -32,31 +32,40 @@ def command_arguments():
     parser.add_argument(
         '--ca_cert',
         type=str,
-        required=True,
+        required=False,
         help='CA cert or bundle.'
     )
     parser.add_argument(
         '--client_cert',
         type=str,
-        required=True,
+        required=False,
         help='Client certificate used for client identification and auth.'
     )
     parser.add_argument(
         '--client_key',
         type=str,
-        required=True,
+        required=False,
         help='Client certificate key.'
     )
     return parser.parse_args()
 
 
 def build_client_stub(cli_args):
-    ca_cert = open(cli_args.ca_cert,'rb').read()
-    cert = open(cli_args.client_cert,'rb').read()
-    key = open(cli_args.client_key,'rb').read()
-    credentials = grpc.ssl_channel_credentials(ca_cert, key, cert)
-    channel = grpc.secure_channel(
-        cli_args.host + ':' + str(cli_args.port), credentials)
+    cert = None
+    key = None
+    if cli_args.client_cert:
+        cert = open(cli_args.client_cert, 'rb').read()
+        key = open(cli_args.client_key, 'rb').read()
+
+    if cli_args.ca_cert:
+        ca_cert = open(cli_args.ca_cert, 'rb').read()
+        credentials = grpc.ssl_channel_credentials(ca_cert, key, cert)
+        channel = grpc.secure_channel(
+            cli_args.host + ':' + str(cli_args.port), credentials)
+    else:
+        channel = grpc.insecure_channel(
+            cli_args.host + ':' + str(cli_args.port))
+
     return namer_pb2_grpc.NamerStub(channel)
 
 
