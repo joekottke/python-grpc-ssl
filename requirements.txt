@@ -1,5 +1,6 @@
-grpcio==1.21.1
-grpcio-tools==1.21.1
+grpcio==1.23.0
+grpcio-health-checking==1.23.0
+grpcio-tools==1.23.0
 prometheus-client==0.7.1
-protobuf==3.8.0
+protobuf==3.9.1
 six==1.12.0

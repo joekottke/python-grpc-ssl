@@ -10,6 +10,8 @@ from proto import namer_pb2_grpc
 
 import namer
 
+from grpc_health.v1 import health, health_pb2, health_pb2_grpc
+
 request_metric = Summary(
     'english_full_name_seconds',
     'Time processing EnglishFullName requests')
@@ -71,6 +73,10 @@ def command_args():
 
 def serve(args):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
+    health_servicer = health.HealthServicer()
+    health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
+
     namer_pb2_grpc.add_NamerServicer_to_server(Namer(), server)
 
     ca_cert = None
@@ -99,11 +105,14 @@ def serve(args):
 
     print('Starting server. Listening on port {}...'.format(args.port))
     server.start()
+    health_servicer.set('', health_pb2.HealthCheckResponse.SERVING)
     try:
         while True:
             time.sleep(86400)
     except KeyboardInterrupt:
-        server.stop(0)
+        health_servicer.set('', health_pb2.HealthCheckResponse.NOT_SERVING)
+        time.sleep(10)
+        server.stop(1)
 
 
 if __name__ == '__main__':
