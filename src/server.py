@@ -35,6 +35,21 @@ class Namer(namer_pb2_grpc.NamerServicer):
         #     context.invocation_metadata()))
         return response
 
+    def BatchEnglishFullName(self, request_iterator, context):
+        """Streaming RPC for batch processing of name requests."""
+        for request in request_iterator:
+            response = namer_pb2.NameResponse()
+            first = request.first_name
+            last = request.last_name
+            middle = request.middle_name
+            prefix = request.prefix
+            suffix = request.suffix
+            response.full_name = namer.english_full_name(
+                first=first, last=last,
+                middle=middle, prefix=prefix,
+                suffix=suffix)
+            yield response
+
 
 def command_args():
     parser = argparse.ArgumentParser(description='GRPC-based namer server.')
@@ -68,11 +83,18 @@ def command_args():
         required=False,
         help='Server certificate key.'
     )
+    parser.add_argument(
+        '--max_workers',
+        type=int,
+        default=100,
+        help='Maximum number of worker threads (default: 100)'
+    )
     return parser.parse_args()
 
 
 def serve(args):
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    # Increased thread pool to handle concurrent requests
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=args.max_workers))
 
     health_servicer = health.HealthServicer()
     health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
