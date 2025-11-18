@@ -2,6 +2,7 @@ syntax = "proto3";
 
 service Namer {
   rpc EnglishFullName (NameRequest) returns (NameResponse) {}
+  rpc BatchEnglishFullName (stream NameRequest) returns (stream NameResponse) {}
 }
 
 message NameRequest {
