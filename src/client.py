@@ -129,7 +129,7 @@ def main():
             try:
                 full_name = future.result()
                 completed += 1
-                print("Got response: '{}'".format(full_name))
+                #print("Got response: '{}'".format(full_name))
             except Exception as exc:
                 print('Request generated an exception: {}'.format(exc))
 
